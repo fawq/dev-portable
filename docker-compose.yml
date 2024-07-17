@@ -1,0 +1,75 @@
+services:
+  gitlab-web:
+    image: gitlab/gitlab-ce:latest
+    restart: always
+    hostname: 'localhost'
+    container_name: gitlab-ce
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://localhost'
+    ports:
+      - 8080:80
+      - 8443:443
+    volumes:
+      - /srv/gitlab/config:/etc/gitlab
+      - /srv/gitlab/logs:/var/log/gitlab
+      - /srv/gitlab/data:/var/opt/gitlab
+    networks:
+      - gitlab
+    shm_size: 256m
+    cpus: '2.0'
+    mem_reservation: 50M
+    mem_limit: 3G
+  gitlab-runner:
+    image: gitlab/gitlab-runner:alpine
+    container_name: gitlab-runner    
+    restart: always
+    depends_on:
+      - gitlab-web
+    volumes:
+      - /srv/gitlab-runner/config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - gitlab
+    cpus: '0.5'
+    mem_reservation: 20M
+    mem_limit: 500M
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    restart: always
+    privileged: true
+    user: root
+    ports:
+      - 8082:8080
+      - 50000:50000
+    volumes:
+      - /srv/jenkins/jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/local/bin/docker:/usr/local/bin/docker
+    networks:
+      - jenkins
+    cpus: '0.5'
+    mem_reservation: 20M
+    mem_limit: 500M
+  nexus:
+    image: sonatype/nexus3:latest
+    container_name: nexus
+    restart: always
+    ports:
+      - 8081:8081
+    volumes:
+      - /srv/nexus/nexus-data:/nexus-data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - nexus
+    cpus: '0.5'
+    mem_reservation: 50M
+    mem_limit: 3G
+networks:
+  gitlab:
+    name: gitlab-network
+  jenkins:
+    name: jenkins-network
+  nexus:
+    name: nexus-network

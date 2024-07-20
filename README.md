@@ -20,7 +20,7 @@ sudo chmod 0644 /srv/gitlab-runner
 
 ## Default config
 
-In [.env](.env) file you cna find default configuration for services like port used to connect gitlab, jenkins or nexus.
+In [.env](.env) file you can find default configuration for services like port used to connect gitlab, jenkins or nexus.
 
 ## Start of services
 

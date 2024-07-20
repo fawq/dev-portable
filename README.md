@@ -4,26 +4,34 @@ Dev portable is configuration for building and maintaining your own local projec
 
 ## Prepare configs
 
-First create 4 separete directories inside `/srv`
+First create 4 separete directories inside `/srv`:
 
 ```bash
 sudo mkdir /srv/gitlab
 sudo mkdir /srv/gitlab-runner
-sudo mkdir /srv/nexus
 ```
 
-Next add permission to write
+Next add permission to write:
 
 ```bash
 sudo chmod 0644 /srv/gitlab
 sudo chmod 0644 /srv/gitlab-runner
-sudo chmod 0644 /srv/nexus
 ```
 
-## Troubleshooting
+## Default config
 
-If nexus has problem with permission just run:
+In [.env](.env) file you cna find default configuration for services like port used to connect gitlab, jenkins or nexus.
+
+## Start of services
+
+To start all services you need to have docker compose installed. Next use this command to bring up all:
 
 ```bash
-sudo chown -R 200 /srv/nexus/
+docker compose up -d
+```
+
+You need to wait ~5 mins when all servcies will be available. If you want to kill all your services use:
+
+```bash
+docker compose down
 ```
